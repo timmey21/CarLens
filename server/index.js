@@ -27,7 +27,7 @@ function buildPrompt(carText, hasImage) {
 
   return `${intro}
 
-Return ONLY valid JSON, no markdown, no explanation:
+Return ONLY this exact JSON structure (no markdown, no explanation outside it):
 {
   "car": {
     "make": "string",
@@ -45,11 +45,11 @@ Return ONLY valid JSON, no markdown, no explanation:
   },
   "parts": [
     {
-      "id": "string",
+      "id": "unique-string",
       "category": "Engine|Drivetrain|Suspension|Brakes|Body|Interior|Electrical|Exhaust|Cooling",
       "name": "string",
       "partNumber": "string",
-      "description": "string (1 sentence max)",
+      "description": "string (2-3 sentences with detail)",
       "priceMin": number,
       "priceMax": number,
       "sources": [
@@ -62,13 +62,13 @@ Return ONLY valid JSON, no markdown, no explanation:
   ],
   "faults": [
     {
-      "id": "string",
+      "id": "unique-string",
       "severity": "Critical|High|Medium|Low",
       "title": "string",
-      "description": "string (1 sentence max)",
+      "description": "string (2-3 sentences with technical detail)",
       "affectedYears": "string",
       "frequency": "Very Common|Common|Occasional|Rare",
-      "symptoms": ["string", "string"],
+      "symptoms": ["string", "string", "string", "string"],
       "repairCostMin": number,
       "repairCostMax": number,
       "diyPossible": boolean,
@@ -77,8 +77,8 @@ Return ONLY valid JSON, no markdown, no explanation:
   ]
 }
 
-Include exactly 10 parts spread across different categories with 2 sources each.
-Include exactly 5 fault issues. Keep all text fields short and concise.`;
+Include 15-20 key parts covering every major category (Engine, Drivetrain, Suspension, Brakes, Body, Interior, Electrical, Exhaust, Cooling) with 3 sourcing options each showing price differences between OEM, independent, and aftermarket.
+Include 6-8 real-world known fault and reliability issues specific to this model with full technical detail, all symptoms, and prevention tips.`;
 }
 
 app.post('/api/analyze', upload.single('image'), async (req, res) => {
@@ -118,7 +118,7 @@ app.post('/api/analyze', upload.single('image'), async (req, res) => {
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 2000,
+      max_tokens: 4096,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: messageContent }]
     });
