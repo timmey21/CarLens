@@ -27,7 +27,7 @@ function buildPrompt(carText, hasImage) {
 
   return `${intro}
 
-Return ONLY this exact JSON structure (no markdown, no explanation outside it):
+Return ONLY valid JSON, no markdown, no explanation:
 {
   "car": {
     "make": "string",
@@ -45,11 +45,11 @@ Return ONLY this exact JSON structure (no markdown, no explanation outside it):
   },
   "parts": [
     {
-      "id": "unique-string",
+      "id": "string",
       "category": "Engine|Drivetrain|Suspension|Brakes|Body|Interior|Electrical|Exhaust|Cooling",
       "name": "string",
       "partNumber": "string",
-      "description": "string (1-2 sentences)",
+      "description": "string (1 sentence max)",
       "priceMin": number,
       "priceMax": number,
       "sources": [
@@ -62,13 +62,13 @@ Return ONLY this exact JSON structure (no markdown, no explanation outside it):
   ],
   "faults": [
     {
-      "id": "unique-string",
+      "id": "string",
       "severity": "Critical|High|Medium|Low",
       "title": "string",
-      "description": "string (2-3 sentences with technical detail)",
+      "description": "string (1 sentence max)",
       "affectedYears": "string",
       "frequency": "Very Common|Common|Occasional|Rare",
-      "symptoms": ["string", "string", "string"],
+      "symptoms": ["string", "string"],
       "repairCostMin": number,
       "repairCostMax": number,
       "diyPossible": boolean,
@@ -77,8 +77,8 @@ Return ONLY this exact JSON structure (no markdown, no explanation outside it):
   ]
 }
 
-Include 15-20 key parts across all major categories with 2-3 sourcing options each.
-Include 5-8 real-world known fault and reliability issues for this specific model and generation.`;
+Include exactly 10 parts spread across different categories with 2 sources each.
+Include exactly 5 fault issues. Keep all text fields short and concise.`;
 }
 
 app.post('/api/analyze', upload.single('image'), async (req, res) => {
@@ -118,7 +118,7 @@ app.post('/api/analyze', upload.single('image'), async (req, res) => {
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
+      max_tokens: 2000,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: messageContent }]
     });
