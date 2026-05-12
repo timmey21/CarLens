@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
-const OpenAI = require('openai');
+const Anthropic = require('@anthropic-ai/sdk');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 app.use(cors());
 app.use(express.json());
@@ -90,42 +90,40 @@ app.post('/api/analyze', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Provide an image or a car description.' });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({ error: 'OPENAI_API_KEY is not set. Add it to your Replit Secrets.' });
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not set. Add it to your Replit Secrets.' });
     }
 
-    let messages;
+    let messageContent;
 
     if (hasImage) {
       const mimeType = req.file.mimetype;
       if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(mimeType)) {
         return res.status(400).json({ error: 'Unsupported image format. Use JPEG, PNG, or WebP.' });
       }
-      const base64 = req.file.buffer.toString('base64');
-      messages = [
-        { role: 'system', content: SYSTEM_PROMPT },
+      messageContent = [
         {
-          role: 'user',
-          content: [
-            { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64}` } },
-            { type: 'text', text: buildPrompt(null, true) }
-          ]
-        }
+          type: 'image',
+          source: {
+            type: 'base64',
+            media_type: mimeType,
+            data: req.file.buffer.toString('base64')
+          }
+        },
+        { type: 'text', text: buildPrompt(null, true) }
       ];
     } else {
-      messages = [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: buildPrompt(text, false) }
-      ];
+      messageContent = buildPrompt(text, false);
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-6',
       max_tokens: 4096,
-      messages
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: messageContent }]
     });
 
-    const rawText = response.choices[0].message.content.trim();
+    const rawText = response.content[0].text.trim();
 
     let data;
     try {
