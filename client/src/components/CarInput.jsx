@@ -8,7 +8,7 @@ const EXAMPLES = [
   'Bugatti Chiron 2018'
 ];
 
-export default function CarInput({ onAnalyze, loading }) {
+export default function CarInput({ onAnalyze, onDemo, loading }) {
   const [mode, setMode] = useState('text');
   const [text, setText] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -111,6 +111,13 @@ export default function CarInput({ onAnalyze, loading }) {
           {loading ? 'Analyzing…' : 'Analyze Car'}
         </button>
       </form>
+
+      <div className="demo-row">
+        <span className="demo-label">No API key yet?</span>
+        <button className="demo-btn" onClick={onDemo} disabled={loading}>
+          Try Demo — Ferrari 458 Italia
+        </button>
+      </div>
     </div>
   );
 }

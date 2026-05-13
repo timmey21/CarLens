@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CarInput from './components/CarInput';
 import CarResult from './components/CarResult';
 import LoadingSpinner from './components/LoadingSpinner';
+import DEMO_DATA from './demoData';
 
 export default function App() {
   const [result, setResult] = useState(null);
@@ -38,6 +39,11 @@ export default function App() {
     }
   };
 
+  const handleDemo = () => {
+    setError(null);
+    setResult(DEMO_DATA);
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -49,7 +55,7 @@ export default function App() {
       </header>
 
       <main className="app-main">
-        <CarInput onAnalyze={handleAnalyze} loading={loading} />
+        <CarInput onAnalyze={handleAnalyze} onDemo={handleDemo} loading={loading} />
         {loading && <LoadingSpinner />}
         {error && <div className="error-banner">⚠ {error}</div>}
         {result && <CarResult data={result} />}
