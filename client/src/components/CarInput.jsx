@@ -5,7 +5,6 @@ const EXAMPLES = [
   'Lamborghini Huracán EVO 2020',
   'Porsche 911 GT3 RS 2023',
   'McLaren 720S 2019',
-  'Bugatti Chiron 2018'
 ];
 
 export default function CarInput({ onAnalyze, onDemo, loading }) {
@@ -68,14 +67,6 @@ export default function CarInput({ onAnalyze, onDemo, loading }) {
               disabled={loading}
               autoFocus
             />
-            <div className="examples">
-              <span className="examples-label">Try:</span>
-              {EXAMPLES.map(ex => (
-                <button key={ex} type="button" className="example-chip" onClick={() => setText(ex)} disabled={loading}>
-                  {ex}
-                </button>
-              ))}
-            </div>
           </div>
         ) : (
           <div
@@ -112,11 +103,20 @@ export default function CarInput({ onAnalyze, onDemo, loading }) {
         </button>
       </form>
 
-      <div className="demo-row">
-        <span className="demo-label">No API key yet?</span>
-        <button className="demo-btn" onClick={onDemo} disabled={loading}>
-          Try Demo — Ferrari 458 Italia
-        </button>
+      <div className="demo-section">
+        <p className="demo-label">Try a free demo — no API key needed:</p>
+        <div className="demo-cars">
+          {EXAMPLES.map(car => (
+            <button
+              key={car}
+              className="demo-car-btn"
+              onClick={() => onDemo(car)}
+              disabled={loading}
+            >
+              {car}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

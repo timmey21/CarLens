@@ -2,7 +2,14 @@ import { useState } from 'react';
 import CarInput from './components/CarInput';
 import CarResult from './components/CarResult';
 import LoadingSpinner from './components/LoadingSpinner';
-import DEMO_DATA from './demoData';
+import { DEMO_FERRARI, DEMO_PORSCHE, DEMO_MCLAREN, DEMO_LAMBORGHINI } from './demoData';
+
+const DEMOS = {
+  'Ferrari 458 Italia 2012': DEMO_FERRARI,
+  'Porsche 911 GT3 RS 2023': DEMO_PORSCHE,
+  'McLaren 720S 2019': DEMO_MCLAREN,
+  'Lamborghini Huracán EVO 2020': DEMO_LAMBORGHINI,
+};
 
 export default function App() {
   const [result, setResult] = useState(null);
@@ -10,13 +17,18 @@ export default function App() {
   const [error, setError] = useState(null);
 
   const handleAnalyze = async (input) => {
+    if (input.type === 'text' && DEMOS[input.text]) {
+      setError(null);
+      setResult(DEMOS[input.text]);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
       let response;
-
       if (input.type === 'image') {
         const formData = new FormData();
         formData.append('image', input.file);
@@ -28,7 +40,6 @@ export default function App() {
           body: JSON.stringify({ text: input.text })
         });
       }
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Analysis failed');
       setResult(data);
@@ -39,9 +50,9 @@ export default function App() {
     }
   };
 
-  const handleDemo = () => {
+  const handleDemo = (carName) => {
     setError(null);
-    setResult(DEMO_DATA);
+    setResult(DEMOS[carName]);
   };
 
   return (
