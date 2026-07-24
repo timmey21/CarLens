@@ -2,32 +2,34 @@ import type { CarProfile } from "@/lib/cars";
 
 export default function CarBreakdown({ car }: { car: CarProfile }) {
   return (
-    <div className="w-full max-w-2xl space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold">
-          {car.year} {car.make} {car.model}
+    <div className="w-full max-w-2xl space-y-10">
+      <div className="border-b border-border pb-4">
+        <p className="font-mono text-xs tracking-[0.3em] text-accent uppercase">
+          {car.year}
+        </p>
+        <h2 className="text-3xl font-black tracking-tight">
+          {car.make} {car.model}
         </h2>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {car.parts.map((category) => (
           <div key={category.category}>
-            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-black/50 dark:text-white/50">
+            <h3 className="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.2em] text-muted uppercase">
+              <span className="h-2 w-2 bg-accent" />
               {category.category}
             </h3>
-            <ul className="divide-y divide-black/10 rounded-lg border border-black/10 dark:divide-white/10 dark:border-white/10">
+            <ul className="divide-y divide-border rounded-md border border-border bg-surface">
               {category.items.map((item) => (
                 <li
                   key={item.name}
-                  className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-1 px-4 py-3 transition hover:bg-white/[0.02] sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
                     <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-black/50 dark:text-white/50">
-                      {item.sourcing}
-                    </p>
+                    <p className="text-sm text-muted">{item.sourcing}</p>
                   </div>
-                  <p className="text-sm font-medium sm:text-right">
+                  <p className="font-mono text-sm font-bold text-accent sm:text-right">
                     {item.estPriceRange}
                   </p>
                 </li>
@@ -38,12 +40,16 @@ export default function CarBreakdown({ car }: { car: CarProfile }) {
       </div>
 
       <div>
-        <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-black/50 dark:text-white/50">
+        <h3 className="mb-3 flex items-center gap-2 font-mono text-xs font-bold tracking-[0.2em] text-muted uppercase">
+          <span className="h-2 w-2 bg-accent" />
           Common Faults
         </h3>
-        <ul className="list-disc space-y-1 rounded-lg border border-black/10 px-8 py-4 text-sm dark:border-white/10">
+        <ul className="space-y-3 rounded-md border border-accent/20 bg-accent/[0.04] px-4 py-4">
           {car.commonFaults.map((fault) => (
-            <li key={fault}>{fault}</li>
+            <li key={fault} className="flex gap-3 text-sm">
+              <span className="mt-1 font-mono text-accent">!</span>
+              <span>{fault}</span>
+            </li>
           ))}
         </ul>
       </div>

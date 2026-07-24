@@ -18,11 +18,16 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-1 flex-col items-center gap-10 px-6 py-16">
+    <main className="flex flex-1 flex-col items-center gap-12 px-6 py-16 sm:py-24">
       <div className="text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">CarLens</h1>
-        <p className="mt-2 text-black/60 dark:text-white/60">
-          Type in a sports car and get its parts breakdown, pricing,
+        <p className="mb-3 font-mono text-xs tracking-[0.3em] text-accent uppercase">
+          Parts · Pricing · Fault History
+        </p>
+        <h1 className="text-5xl font-black tracking-tight sm:text-6xl">
+          Car<span className="text-accent">Lens</span>
+        </h1>
+        <p className="mx-auto mt-4 max-w-sm text-muted">
+          Type in a sports car and get its full parts breakdown, pricing,
           sourcing, and common faults.
         </p>
       </div>
@@ -30,9 +35,9 @@ export default function Home() {
       <SearchForm onSearch={handleSearch} demoNames={demoNames} />
 
       {result === null && (
-        <p className="max-w-xl text-center text-black/60 dark:text-white/60">
-          No demo data for that one yet. This is a demo build — try one of:{" "}
-          {demoNames.join(", ")}.
+        <p className="max-w-xl text-center text-muted">
+          No demo data for that one yet — this is a demo build. Try one of
+          the cars above.
         </p>
       )}
 
