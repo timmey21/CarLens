@@ -20,6 +20,7 @@ export default function CarExplorer({ car }: { car: CarProfile }) {
           Drag to rotate · pinch to zoom · tap a dot for details
         </p>
         <CarModel
+          car={car}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
