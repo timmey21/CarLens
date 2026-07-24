@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getCarBreakdown, demoCarNames } from "@/lib/getCarBreakdown";
 import type { CarProfile } from "@/lib/cars";
 import SearchForm from "./components/SearchForm";
-import CarBreakdown from "./components/CarBreakdown";
+import CarExplorer from "./components/CarExplorer";
 
 export default function Home() {
   const [result, setResult] = useState<CarProfile | null | undefined>(
@@ -41,7 +41,7 @@ export default function Home() {
         </p>
       )}
 
-      {result && <CarBreakdown car={result} />}
+      {result && <CarExplorer car={result} />}
     </main>
   );
 }
