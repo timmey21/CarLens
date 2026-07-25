@@ -8,10 +8,10 @@ import { getCarVisual, type CarVisual } from "@/lib/carVisuals";
 import WebGLErrorBoundary from "./WebGLErrorBoundary";
 
 const HOTSPOTS: { category: string; position: [number, number, number] }[] = [
-  { category: "Engine", position: [0, 0.65, 1.55] },
-  { category: "Brakes & Suspension", position: [1.05, 0.45, 1.3] },
-  { category: "Exterior", position: [1.05, 0.6, -1.5] },
-  { category: "Interior & Wheels", position: [0, 1.08, -0.2] },
+  { category: "Engine", position: [0, 0.72, 1.6] },
+  { category: "Brakes & Suspension", position: [0.95, 0.58, 1.25] },
+  { category: "Exterior", position: [0.95, 0.55, -1.5] },
+  { category: "Interior & Wheels", position: [0, 1.09, -0.2] },
 ];
 
 function noopSubscribe() {
@@ -225,12 +225,15 @@ function HotspotMarker({
         type="button"
         onClick={() => onSelect(category)}
         aria-label={category}
-        className={`h-7 w-7 rounded-full border-2 transition ${
-          active
-            ? "border-white bg-accent scale-110"
-            : "border-accent bg-accent/70 hover:scale-110 hover:bg-accent"
-        }`}
+        className="flex h-7 w-7 items-center justify-center"
       >
+        <span
+          className={`block h-3 w-3 rounded-full border-2 transition ${
+            active
+              ? "scale-125 border-white bg-accent"
+              : "border-accent bg-accent/70 hover:scale-125 hover:bg-accent"
+          }`}
+        />
         <span className="sr-only">{category}</span>
       </button>
     </Html>

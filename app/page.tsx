@@ -1,20 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { getCarBreakdown, demoCarNames } from "@/lib/getCarBreakdown";
-import type { CarProfile } from "@/lib/cars";
+import { search, demoCarNames, type SearchResult } from "@/lib/getCarBreakdown";
 import SearchForm from "./components/SearchForm";
+import FeatureFilter from "./components/FeatureFilter";
 import CarExplorer from "./components/CarExplorer";
 
 export default function Home() {
-  const [result, setResult] = useState<CarProfile | null | undefined>(
-    undefined
-  );
+  const [result, setResult] = useState<SearchResult | undefined>(undefined);
 
   const demoNames = demoCarNames();
 
   function handleSearch(query: string) {
-    setResult(getCarBreakdown(query) ?? null);
+    setResult(search(query));
   }
 
   return (
@@ -33,15 +31,23 @@ export default function Home() {
       </div>
 
       <SearchForm onSearch={handleSearch} demoNames={demoNames} />
+      <FeatureFilter onSelectCar={handleSearch} />
 
-      {result === null && (
+      {result?.status === "unknown" && (
         <p className="max-w-xl text-center text-muted">
-          No demo data for that one yet — this is a demo build. Try one of
-          the cars above.
+          We don&apos;t recognize that one. Try one of the cars above.
         </p>
       )}
 
-      {result && <CarExplorer car={result} />}
+      {result?.status === "recognized" && (
+        <p className="max-w-xl text-center text-muted">
+          We recognize the <span className="text-foreground">{result.label}</span> —
+          full parts data isn&apos;t available for it yet. Try one of the demo
+          cars above for the complete breakdown.
+        </p>
+      )}
+
+      {result?.status === "match" && <CarExplorer car={result.car} />}
     </main>
   );
 }
