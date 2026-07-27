@@ -6,7 +6,13 @@ import CarModel from "./CarModel";
 import PartsList from "./PartsList";
 import CarBreakdown from "./CarBreakdown";
 
-export default function CarExplorer({ car }: { car: CarProfile }) {
+export default function CarExplorer({
+  car,
+  source = "demo",
+}: {
+  car: CarProfile;
+  source?: "demo" | "ai";
+}) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     null
   );
@@ -36,7 +42,7 @@ export default function CarExplorer({ car }: { car: CarProfile }) {
         )}
       </div>
 
-      <CarBreakdown car={car} />
+      <CarBreakdown car={car} source={source} />
     </div>
   );
 }

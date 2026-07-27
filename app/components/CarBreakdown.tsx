@@ -1,13 +1,26 @@
 import type { CarProfile } from "@/lib/cars";
 import PartsList from "./PartsList";
 
-export default function CarBreakdown({ car }: { car: CarProfile }) {
+export default function CarBreakdown({
+  car,
+  source = "demo",
+}: {
+  car: CarProfile;
+  source?: "demo" | "ai";
+}) {
   return (
     <div className="w-full max-w-2xl space-y-10">
       <div className="border-b border-border pb-4">
-        <p className="font-mono text-xs tracking-[0.3em] text-accent uppercase">
-          {car.year}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-mono text-xs tracking-[0.3em] text-accent uppercase">
+            {car.year}
+          </p>
+          {source === "ai" && (
+            <span className="rounded-full border border-accent/40 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide text-accent">
+              AI-generated estimate
+            </span>
+          )}
+        </div>
         <h2 className="text-3xl font-black tracking-tight">
           {car.make} {car.model}
         </h2>
