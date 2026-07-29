@@ -3,8 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserSafe } from "@/lib/supabase/getUserSafe";
 
 export default async function AuthNav() {
-  const supabase = await createClient();
-  const user = await getUserSafe(supabase);
+  let user = null;
+  try {
+    const supabase = await createClient();
+    user = await getUserSafe(supabase);
+  } catch {
+    // Supabase isn't configured yet — degrade to the logged-out nav
+    // rather than crashing every page.
+  }
 
   return (
     <nav className="flex items-center justify-end gap-4 border-b border-border px-6 py-3 font-mono text-xs font-bold uppercase tracking-wide">

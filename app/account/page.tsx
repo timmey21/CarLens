@@ -11,7 +11,17 @@ export default async function AccountPage({
 }) {
   const { checkout } = await searchParams;
 
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = await createClient();
+  } catch {
+    return (
+      <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background px-6 py-16 text-center">
+        <p className="text-muted">Accounts aren&apos;t set up yet.</p>
+      </main>
+    );
+  }
+
   const user = await getUserSafe(supabase);
 
   if (!user) {

@@ -5,6 +5,16 @@ import { getUserSafe } from "./getUserSafe";
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  // Supabase isn't configured yet (env vars unset) — let the request
+  // through unchanged rather than crashing every single page. Once the
+  // env vars are set in Vercel this branch never runs.
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return response;
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

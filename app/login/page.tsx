@@ -17,16 +17,21 @@ export default function LoginPage() {
     setStatus("loading");
     setErrorMessage("");
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setErrorMessage(error.message);
+      if (error) {
+        setErrorMessage(error.message);
+        setStatus("error");
+        return;
+      }
+
+      window.location.href = "/account";
+    } catch {
+      setErrorMessage("Accounts aren't set up yet.");
       setStatus("error");
-      return;
     }
-
-    window.location.href = "/account";
   }
 
   return (

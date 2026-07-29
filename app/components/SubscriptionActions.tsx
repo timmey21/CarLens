@@ -37,8 +37,12 @@ export default function SubscriptionActions({ isActive }: { isActive: boolean })
   }
 
   async function signOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // Nothing to sign out of if Supabase isn't configured.
+    }
     window.location.href = "/";
   }
 
