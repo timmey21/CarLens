@@ -2,16 +2,11 @@
 
 import { useState } from "react";
 import type { InstallStep } from "@/lib/installGuide";
-import type { PhaseImages } from "@/lib/guideImages";
-import {
-  getCachedInstallGuide,
-  cacheInstallGuide,
-  type CachedInstallGuide,
-} from "@/lib/installGuideCache";
+import { getCachedInstallGuide, cacheInstallGuide } from "@/lib/installGuideCache";
 
 type State =
   | { status: "loading" }
-  | { status: "success"; steps: InstallStep[]; images: PhaseImages }
+  | { status: "success"; steps: InstallStep[] }
   | { status: "error" };
 
 export default function InstallGuide({
@@ -32,7 +27,7 @@ export default function InstallGuide({
 
     const cached = getCachedInstallGuide(query);
     if (cached) {
-      setState({ status: "success", steps: cached.steps, images: cached.images });
+      setState({ status: "success", steps: cached });
       return;
     }
 
@@ -45,9 +40,9 @@ export default function InstallGuide({
       });
       if (!response.ok) throw new Error("Install guide request failed");
 
-      const { steps, images } = (await response.json()) as CachedInstallGuide;
-      cacheInstallGuide(query, { steps, images });
-      setState({ status: "success", steps, images });
+      const { steps } = (await response.json()) as { steps: InstallStep[] };
+      cacheInstallGuide(query, steps);
+      setState({ status: "success", steps });
     } catch {
       setState({ status: "error" });
     }
@@ -136,15 +131,6 @@ export default function InstallGuide({
                     ? "Removing old part"
                     : "Installing new part"}
                 </span>
-
-                {state.images[state.steps[pageIndex].phase] && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={state.images[state.steps[pageIndex].phase]!}
-                    alt={`Illustration: ${state.steps[pageIndex].phase} phase`}
-                    className="aspect-square w-full max-w-[280px] rounded-md border border-border object-cover"
-                  />
-                )}
 
                 <div className="flex flex-col items-center gap-2">
                   <p className="min-h-[3.5rem] text-center text-xl font-medium leading-snug">

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { generateInstallGuide } from "@/lib/installGuide";
-import { generatePhaseImages } from "@/lib/guideImages";
 
 export async function POST(request: Request) {
   let body: { query?: string };
@@ -16,11 +15,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const [steps, images] = await Promise.all([
-      generateInstallGuide(query),
-      generatePhaseImages(query),
-    ]);
-    return NextResponse.json({ steps, images });
+    const steps = await generateInstallGuide(query);
+    return NextResponse.json({ steps });
   } catch (error) {
     console.error("Install guide generation failed:", error);
     return NextResponse.json(

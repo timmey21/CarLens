@@ -1,33 +1,26 @@
 import type { InstallStep } from "./installGuide";
-import type { PhaseImages } from "./guideImages";
 
-export type CachedInstallGuide = {
-  steps: InstallStep[];
-  images: PhaseImages;
-};
-
-const CACHE_PREFIX = "carlens:install-guide-cache:v2:";
+const CACHE_PREFIX = "carlens:install-guide-cache:v3:";
 
 function cacheKey(query: string): string {
   return CACHE_PREFIX + query.trim().toLowerCase();
 }
 
-export function getCachedInstallGuide(query: string): CachedInstallGuide | null {
+export function getCachedInstallGuide(query: string): InstallStep[] | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(cacheKey(query));
-    return raw ? (JSON.parse(raw) as CachedInstallGuide) : null;
+    return raw ? (JSON.parse(raw) as InstallStep[]) : null;
   } catch {
     return null;
   }
 }
 
-export function cacheInstallGuide(query: string, guide: CachedInstallGuide): void {
+export function cacheInstallGuide(query: string, steps: InstallStep[]): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(cacheKey(query), JSON.stringify(guide));
+    window.localStorage.setItem(cacheKey(query), JSON.stringify(steps));
   } catch {
-    // Storage full or unavailable (base64 images make this more likely) —
-    // not worth failing the request over.
+    // Storage full or unavailable — not worth failing the request over.
   }
 }
