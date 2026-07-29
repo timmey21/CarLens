@@ -5,6 +5,7 @@ import {
   buildPartSearchQuery,
 } from "@/lib/buyLinks";
 import PriceCompare from "./PriceCompare";
+import InstallGuide from "./InstallGuide";
 
 export default function PartsList({
   car,
@@ -48,6 +49,10 @@ export default function PartsList({
               >
                 Find Used ↗
               </a>
+              <InstallGuide
+                query={buildPartSearchQuery(car, item)}
+                partName={item.name}
+              />
             </div>
             <div className="mt-2">
               <PriceCompare query={buildPartSearchQuery(car, item)} />
