@@ -34,7 +34,7 @@ export default function CarExplorer({
 
       <div className="min-h-[3rem]">
         {selected ? (
-          <PartsList category={selected} />
+          <PartsList car={car} category={selected} />
         ) : (
           <p className="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted">
             Tap a highlighted dot on the car to see parts for that area.

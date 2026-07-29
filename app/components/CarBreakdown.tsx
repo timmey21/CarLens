@@ -28,7 +28,7 @@ export default function CarBreakdown({
 
       <div className="space-y-8">
         {car.parts.map((category) => (
-          <PartsList key={category.category} category={category} />
+          <PartsList key={category.category} car={car} category={category} />
         ))}
       </div>
 
