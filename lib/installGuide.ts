@@ -1,6 +1,7 @@
 export type InstallStep = {
   phase: "removal" | "install";
   instruction: string;
+  detail: string;
 };
 
 const MODEL = "gpt-4o-mini";
@@ -13,15 +14,16 @@ const INSTALL_GUIDE_SCHEMA = {
     properties: {
       steps: {
         type: "array",
-        minItems: 6,
-        maxItems: 14,
+        minItems: 8,
+        maxItems: 18,
         items: {
           type: "object",
           properties: {
             phase: { type: "string", enum: ["removal", "install"] },
             instruction: { type: "string" },
+            detail: { type: "string" },
           },
-          required: ["phase", "instruction"],
+          required: ["phase", "instruction", "detail"],
           additionalProperties: false,
         },
       },
@@ -43,14 +45,19 @@ export function buildInstallGuideRequestBody(query: string) {
         role: "system",
         content:
           "You are a mechanic's assistant for a car parts app. Given a car " +
-          "and part, produce an ordered step-by-step guide: first the steps " +
-          "to remove the old/existing part (phase 'removal'), then the " +
-          "steps to install the new one (phase 'install'). Keep each step " +
-          "short — one clear action — since each step is shown as its own " +
-          "page in a flip-through instruction booklet. Include an essential " +
-          "safety step (e.g. disconnect the battery) as its own step where " +
-          "relevant. This is general guidance for an enthusiast app, not a " +
-          "certified repair manual.",
+          "and part, produce a detailed, ordered step-by-step guide: first " +
+          "the steps to remove the old/existing part (phase 'removal'), " +
+          "then the steps to install the new one (phase 'install'). Break " +
+          "the job into enough granular steps that a beginner could follow " +
+          "along — separate steps for things like disconnecting the " +
+          "battery, removing fasteners, disconnecting electrical " +
+          "connectors, and torquing things back down, rather than " +
+          "combining them. Each step has two parts: 'instruction' — one " +
+          "short, clear action, since each step is its own page in a " +
+          "flip-through booklet — and 'detail' — one extra sentence with " +
+          "the specifics that matter (torque spec, which direction, what " +
+          "to watch out for, what tool to use). This is general guidance " +
+          "for an enthusiast app, not a certified repair manual.",
       },
       {
         role: "user",
@@ -85,7 +92,11 @@ export function parseInstallGuideFromResponse(
   }
 
   for (const step of parsed.steps) {
-    if (!step.instruction || (step.phase !== "removal" && step.phase !== "install")) {
+    if (
+      !step.instruction ||
+      !step.detail ||
+      (step.phase !== "removal" && step.phase !== "install")
+    ) {
       throw new Error("OpenAI response step missing required fields");
     }
   }

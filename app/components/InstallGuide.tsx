@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 import type { InstallStep } from "@/lib/installGuide";
-import { getCachedInstallGuide, cacheInstallGuide } from "@/lib/installGuideCache";
+import type { PhaseImages } from "@/lib/guideImages";
+import {
+  getCachedInstallGuide,
+  cacheInstallGuide,
+  type CachedInstallGuide,
+} from "@/lib/installGuideCache";
 
 type State =
   | { status: "loading" }
-  | { status: "success"; steps: InstallStep[] }
+  | { status: "success"; steps: InstallStep[]; images: PhaseImages }
   | { status: "error" };
 
 export default function InstallGuide({
@@ -27,7 +32,7 @@ export default function InstallGuide({
 
     const cached = getCachedInstallGuide(query);
     if (cached) {
-      setState({ status: "success", steps: cached });
+      setState({ status: "success", steps: cached.steps, images: cached.images });
       return;
     }
 
@@ -40,9 +45,9 @@ export default function InstallGuide({
       });
       if (!response.ok) throw new Error("Install guide request failed");
 
-      const { steps } = (await response.json()) as { steps: InstallStep[] };
-      cacheInstallGuide(query, steps);
-      setState({ status: "success", steps });
+      const { steps, images } = (await response.json()) as CachedInstallGuide;
+      cacheInstallGuide(query, { steps, images });
+      setState({ status: "success", steps, images });
     } catch {
       setState({ status: "error" });
     }
@@ -95,7 +100,7 @@ export default function InstallGuide({
           </div>
 
           <div
-            className="flex flex-1 select-none flex-col items-center justify-center px-6 py-8"
+            className="flex flex-1 select-none flex-col items-center justify-center overflow-y-auto px-6 py-8"
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
@@ -119,7 +124,7 @@ export default function InstallGuide({
             )}
 
             {state.status === "success" && (
-              <div className="flex w-full max-w-md flex-col items-center gap-6">
+              <div className="flex w-full max-w-md flex-col items-center gap-5">
                 <span
                   className={`rounded-full border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wide ${
                     state.steps[pageIndex].phase === "removal"
@@ -132,9 +137,23 @@ export default function InstallGuide({
                     : "Installing new part"}
                 </span>
 
-                <p className="min-h-[6rem] text-center text-xl font-medium leading-snug">
-                  {state.steps[pageIndex].instruction}
-                </p>
+                {state.images[state.steps[pageIndex].phase] && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={state.images[state.steps[pageIndex].phase]!}
+                    alt={`Illustration: ${state.steps[pageIndex].phase} phase`}
+                    className="aspect-square w-full max-w-[280px] rounded-md border border-border object-cover"
+                  />
+                )}
+
+                <div className="flex flex-col items-center gap-2">
+                  <p className="min-h-[3.5rem] text-center text-xl font-medium leading-snug">
+                    {state.steps[pageIndex].instruction}
+                  </p>
+                  <p className="text-center text-sm text-muted">
+                    {state.steps[pageIndex].detail}
+                  </p>
+                </div>
 
                 <div className="flex items-center gap-6">
                   <button
