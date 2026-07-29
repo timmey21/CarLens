@@ -5,6 +5,7 @@ const CATEGORIES = [
   "Brakes & Suspension",
   "Exterior",
   "Interior & Wheels",
+  "Mods & Performance",
 ] as const;
 
 const MODEL = "gpt-4o-mini";
@@ -20,8 +21,8 @@ const RESPONSE_SCHEMA = {
       year: { type: "string" },
       parts: {
         type: "array",
-        minItems: 4,
-        maxItems: 4,
+        minItems: 5,
+        maxItems: 5,
         items: {
           type: "object",
           properties: {
@@ -73,9 +74,13 @@ export function buildRequestBody(query: string, label: string) {
           "Given a car, produce a plausible parts breakdown with realistic " +
           "estimated USD price ranges and generic sourcing (e.g. 'OEM " +
           "dealer', 'aftermarket'), plus common known faults for that model. " +
-          "Use exactly these 4 categories, once each, in this order: " +
+          "Use exactly these 5 categories, once each, in this order: " +
           CATEGORIES.join(", ") +
-          ". This is an estimate for a demo app, not verified pricing data.",
+          ". 'Mods & Performance' is different from the other categories: " +
+          "list aftermarket upgrade parts (e.g. wide-body kit, straight-pipe " +
+          "or cat-back exhaust, coilovers, intake) rather than OEM " +
+          "replacement parts. This is an estimate for a demo app, not " +
+          "verified pricing data.",
       },
       {
         role: "user",

@@ -85,6 +85,21 @@ export const cars: CarProfile[] = [
           },
         ],
       },
+      {
+        category: "Mods & Performance",
+        items: [
+          {
+            name: "Wide-body fender flare kit",
+            estPriceRange: "$3,500 - $6,000",
+            sourcing: "Aftermarket (TechArt, Vorsteiner)",
+          },
+          {
+            name: "Cat-back titanium exhaust system",
+            estPriceRange: "$4,000 - $7,000",
+            sourcing: "Aftermarket (Akrapovič, Fabspeed)",
+          },
+        ],
+      },
     ],
     commonFaults: [
       "Bore scoring on early 9A1 engines (pre-2021 revisions) — check compression before buying",
@@ -156,6 +171,21 @@ export const cars: CarProfile[] = [
             name: "Dual-clutch transmission mechatronic unit",
             estPriceRange: "$4,000 - $7,000",
             sourcing: "Nissan dealer, specialist rebuilders",
+          },
+        ],
+      },
+      {
+        category: "Mods & Performance",
+        items: [
+          {
+            name: "Wide-body kit (Liberty Walk style)",
+            estPriceRange: "$8,000 - $15,000",
+            sourcing: "Aftermarket (Liberty Walk, Rocket Bunny)",
+          },
+          {
+            name: "Titanium straight-pipe exhaust system",
+            estPriceRange: "$3,500 - $6,000",
+            sourcing: "Aftermarket (AMS, Armytrix)",
           },
         ],
       },
@@ -233,6 +263,21 @@ export const cars: CarProfile[] = [
           },
         ],
       },
+      {
+        category: "Mods & Performance",
+        items: [
+          {
+            name: "Wide-body carbon fender kit",
+            estPriceRange: "$4,000 - $7,000",
+            sourcing: "Aftermarket (Liberty Walk, RWB-style shops)",
+          },
+          {
+            name: "Straight-pipe valved exhaust system",
+            estPriceRange: "$2,000 - $3,500",
+            sourcing: "Aftermarket (Akrapovič, MST Performance)",
+          },
+        ],
+      },
     ],
     commonFaults: [
       "Rod bearing wear on S55 engines — listen for knocking, common enough to warrant inspection",
@@ -304,6 +349,21 @@ export const cars: CarProfile[] = [
             name: "Carbon fiber racing seat",
             estPriceRange: "$4,000 - $6,500",
             sourcing: "Ferrari dealer, Sabelt",
+          },
+        ],
+      },
+      {
+        category: "Mods & Performance",
+        items: [
+          {
+            name: "Wide-body kit (Liberty Walk/Novitec style)",
+            estPriceRange: "$10,000 - $20,000",
+            sourcing: "Aftermarket (Liberty Walk, Novitec)",
+          },
+          {
+            name: "Straight-pipe exhaust system",
+            estPriceRange: "$5,000 - $9,000",
+            sourcing: "Aftermarket (Capristo, Novitec)",
           },
         ],
       },

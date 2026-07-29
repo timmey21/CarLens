@@ -12,6 +12,7 @@ const HOTSPOTS: { category: string; position: [number, number, number] }[] = [
   { category: "Brakes & Suspension", position: [0.95, 0.58, 1.25] },
   { category: "Exterior", position: [0.95, 0.55, -1.5] },
   { category: "Interior & Wheels", position: [0, 1.09, -0.2] },
+  { category: "Mods & Performance", position: [-0.95, 0.45, 0] },
 ];
 
 function noopSubscribe() {
