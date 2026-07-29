@@ -1,5 +1,10 @@
 import type { CarProfile, PartCategory } from "@/lib/cars";
-import { buildNewPartLink, buildUsedPartLink } from "@/lib/buyLinks";
+import {
+  buildNewPartLink,
+  buildUsedPartLink,
+  buildPartSearchQuery,
+} from "@/lib/buyLinks";
+import PriceCompare from "./PriceCompare";
 
 export default function PartsList({
   car,
@@ -43,6 +48,9 @@ export default function PartsList({
               >
                 Find Used ↗
               </a>
+            </div>
+            <div className="mt-2">
+              <PriceCompare query={buildPartSearchQuery(car, item)} />
             </div>
           </li>
         ))}
