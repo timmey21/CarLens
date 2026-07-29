@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { search, demoCarNames } from "@/lib/getCarBreakdown";
 import type { CarProfile } from "@/lib/cars";
 import { fetchAiCarBreakdown, getCachedAiCar } from "@/lib/aiLookup";
+import { AuthGateError } from "@/lib/authGate";
 import SearchForm from "./components/SearchForm";
 import FeatureFilter from "./components/FeatureFilter";
 import CarExplorer from "./components/CarExplorer";
@@ -14,6 +16,7 @@ type ViewState =
   | { status: "match"; car: CarProfile }
   | { status: "loading"; label: string }
   | { status: "ai-match"; car: CarProfile }
+  | { status: "ai-gated"; label: string }
   | { status: "ai-error"; label: string };
 
 export default function Home() {
@@ -43,8 +46,12 @@ export default function Home() {
     try {
       const car = await fetchAiCarBreakdown(query, result.label);
       setView({ status: "ai-match", car });
-    } catch {
-      setView({ status: "ai-error", label: result.label });
+    } catch (error) {
+      if (error instanceof AuthGateError) {
+        setView({ status: "ai-gated", label: result.label });
+      } else {
+        setView({ status: "ai-error", label: result.label });
+      }
     }
   }
 
@@ -76,6 +83,16 @@ export default function Home() {
         <p className="max-w-xl text-center text-muted">
           Generating a parts breakdown for{" "}
           <span className="text-foreground">{view.label}</span>...
+        </p>
+      )}
+
+      {view.status === "ai-gated" && (
+        <p className="max-w-xl text-center text-muted">
+          <Link href="/signup" className="text-accent">
+            Sign up
+          </Link>{" "}
+          to unlock an AI-generated breakdown for{" "}
+          <span className="text-foreground">{view.label}</span>.
         </p>
       )}
 

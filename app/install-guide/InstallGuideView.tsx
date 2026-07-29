@@ -5,11 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { InstallStep } from "@/lib/installGuide";
 import { getCachedInstallGuide, cacheInstallGuide } from "@/lib/installGuideCache";
+import { AuthGateError, throwIfGated } from "@/lib/authGate";
 
 type State =
   | { status: "missing" }
   | { status: "loading" }
   | { status: "success"; steps: InstallStep[] }
+  | { status: "gated" }
   | { status: "error" };
 
 export default function InstallGuideView() {
@@ -36,13 +38,14 @@ export default function InstallGuideView() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
+      throwIfGated(response);
       if (!response.ok) throw new Error("Install guide request failed");
 
       const { steps } = (await response.json()) as { steps: InstallStep[] };
       cacheInstallGuide(query, steps);
       setState({ status: "success", steps });
-    } catch {
-      setState({ status: "error" });
+    } catch (error) {
+      setState({ status: error instanceof AuthGateError ? "gated" : "error" });
     }
   }
 
@@ -109,6 +112,17 @@ export default function InstallGuideView() {
 
         {state.status === "loading" && (
           <p className="text-center text-muted">Writing the instructions...</p>
+        )}
+
+        {state.status === "gated" && (
+          <div className="flex flex-col items-center gap-4 text-center">
+            <p className="text-muted">
+              <Link href="/signup" className="font-bold uppercase tracking-wide text-accent">
+                Sign up
+              </Link>{" "}
+              to unlock AI install guides.
+            </p>
+          </div>
         )}
 
         {state.status === "error" && (

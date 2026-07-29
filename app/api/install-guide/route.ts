@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { generateInstallGuide } from "@/lib/installGuide";
+import { requireActiveSubscription } from "@/lib/subscription";
 
 export async function POST(request: Request) {
+  const gate = await requireActiveSubscription();
+  if (!gate.ok) return gate.response;
+
   let body: { query?: string };
   try {
     body = await request.json();

@@ -1,4 +1,5 @@
 import type { CarProfile } from "./cars";
+import { throwIfGated } from "./authGate";
 
 const CACHE_PREFIX = "carlens:ai-cache:v1:";
 
@@ -38,6 +39,7 @@ export async function fetchAiCarBreakdown(
     body: JSON.stringify({ query, label }),
   });
 
+  throwIfGated(response);
   if (!response.ok) {
     throw new Error("AI lookup request failed");
   }

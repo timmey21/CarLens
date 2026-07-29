@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { PriceResult } from "@/lib/priceSearch";
 import { getCachedPriceResults, cachePriceResults } from "@/lib/priceCache";
+import { AuthGateError, throwIfGated } from "@/lib/authGate";
 
 type State =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "success"; results: PriceResult[] }
+  | { status: "gated" }
   | { status: "error" };
 
 export default function PriceCompare({ query }: { query: string }) {
@@ -24,13 +27,14 @@ export default function PriceCompare({ query }: { query: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
+      throwIfGated(response);
       if (!response.ok) throw new Error("Price search request failed");
 
       const { results } = (await response.json()) as { results: PriceResult[] };
       cachePriceResults(query, results);
       setState({ status: "success", results });
-    } catch {
-      setState({ status: "error" });
+    } catch (error) {
+      setState({ status: error instanceof AuthGateError ? "gated" : "error" });
     }
   }
 
@@ -49,6 +53,17 @@ export default function PriceCompare({ query }: { query: string }) {
   if (state.status === "loading") {
     return (
       <p className="font-mono text-xs text-muted">Searching the web...</p>
+    );
+  }
+
+  if (state.status === "gated") {
+    return (
+      <p className="font-mono text-xs text-muted">
+        <Link href="/signup" className="font-bold uppercase tracking-wide text-accent">
+          Sign up
+        </Link>{" "}
+        to unlock AI price search.
+      </p>
     );
   }
 

@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { generateCarProfile } from "@/lib/openaiLookup";
+import { requireActiveSubscription } from "@/lib/subscription";
 
 export async function POST(request: Request) {
+  const gate = await requireActiveSubscription();
+  if (!gate.ok) return gate.response;
+
   let body: { query?: string; label?: string };
   try {
     body = await request.json();
